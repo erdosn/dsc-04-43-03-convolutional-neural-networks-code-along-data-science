@@ -528,19 +528,35 @@ This result is similar to what we got building our manual "deeper" dense model. 
 
 
 ```python
+# sequential moves through layers sequentially
 model = models.Sequential()
+
+# add a conv layer 
+# 32 is number of nodes in layer
+# (3, 3) is filter size
+# relu is great for high/low values whereas sigmoid makes them vanish
 model.add(layers.Conv2D(32, (3, 3), activation='relu',
                         input_shape=(64 ,64,  3)))
+
+# what is this doing?
+# aggregating the conv filter
 model.add(layers.MaxPooling2D((2, 2)))
 
+# convolving with a larger filter (4x4)
+# convolving over pooled layer
 model.add(layers.Conv2D(32, (4, 4), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 
+# repeat
 model.add(layers.Conv2D(64, (3, 3), activation='relu'))
 model.add(layers.MaxPooling2D((2, 2)))
 
+# Flatten
 model.add(layers.Flatten())
+# Assign/GD on weights of our flattened convolved image
 model.add(layers.Dense(64, activation='relu'))
+
+# Layer is outputting to a P(y|x) between 0 and 1 (classification happens here)
 model.add(layers.Dense(1, activation='sigmoid'))
 
 model.compile(loss='binary_crossentropy',
